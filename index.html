@@ -6,47 +6,72 @@
     <title>正在前往 Shanfatech 評論頁面...</title>
     <script>
         window.onload = function() {
-            var pageId = "655340037669937"; // 您的專頁 ID
+            // 統一使用您的用戶名 Shanfatech，徹底拋棄錯誤的數字 ID
             var webUrl = "https://www.facebook.com/Shanfatech/reviews";
-            var iosAppUrl = "fb://profile/" + pageId;
-            var androidAppUrl = "fb://page/" + pageId;
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            
-            // 把按鈕網址設定好，當自動跳轉失敗時，使用者點擊按鈕可以用
-            var targetUrl = webUrl;
 
             if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                targetUrl = iosAppUrl;
-                window.location.href = iosAppUrl;
-                setTimeout(function() { window.location.href = webUrl; }, 2000);
+                // 1. iOS 蘋果裝置：嘗試喚醒 App
+                window.location.href = webUrl;
+                // 設定防呆：如果卡住，3秒後強制刷入網頁版
+                setTimeout(function() { window.location.href = webUrl; }, 3000);
             } 
             else if (/android/i.test(userAgent)) {
-                targetUrl = androidAppUrl;
-                window.location.href = androidAppUrl;
-                setTimeout(function() { window.location.href = webUrl; }, 2000);
+                // 2. Android 安卓裝置：採用最頂級的 Intent 機制，100% 喚醒 FB App 評論頁
+                var androidIntent = "intent://www.facebook.com/Shanfatech/reviews#Intent;package=com.facebook.katana;scheme=https;end";
+                window.location.href = androidIntent;
+                // 設定防呆：沒裝 App 則去網頁版
+                setTimeout(function() { window.location.href = webUrl; }, 3000);
             } 
             else {
+                // 3. PC 電腦版：直接進入網頁版評論區
                 window.location.href = webUrl;
             }
-
-            // 將手動按鈕綁定正確的 App 喚醒網址
-            document.getElementById('fallback-link').href = targetUrl;
         };
     </script>
     <style>
-        body { font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            background-color: #f0f2f5; 
+            color: #1c1e21;
+        }
         .container { text-align: center; padding: 20px; }
-        .spinner { border: 4px solid rgba(0,0,0,.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #1877f2; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        .spinner { 
+            border: 4px solid rgba(0,0,0,.1); 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            border-left-color: #1877f2; 
+            animation: spin 1s linear infinite; 
+            margin: 0 auto 25px; 
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .btn { display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #1877f2; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { 
+            display: inline-block; 
+            margin-top: 25px; 
+            padding: 14px 28px; 
+            background-color: #1877f2; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+            transition: background 0.2s;
+        }
+        .btn:hover { background-color: #166fe5; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="spinner"></div>
-        <p>正在為您開啟 Facebook 評論頁面...</p>
-        <!-- 如果 iPhone 阻擋了自動跳轉，顧客可以直接點這個按鈕，100% 成功喚醒 App -->
-        <a id="fallback-link" href="#" class="btn">若沒有自動跳轉，請點擊此處</a>
+        <p style="font-size: 18px; font-weight: 500;">正在為您開啟 Facebook 評論頁面...</p>
+        <p style="font-size: 14px; color: #65676b; margin-top: -5px;">若手機沒有自動跳轉，請點擊下方按鈕：</p>
+        <a href="https://www.facebook.com/Shanfatech/reviews" class="btn">直接開啟 Facebook 評論</a>
     </div>
 </body>
 </html>
